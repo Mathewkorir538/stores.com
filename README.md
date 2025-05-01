@@ -1,7 +1,4 @@
 
-
----
-
 # Shopit - Online Shopping Website
 
 Shopit is a fully responsive and interactive online shopping website designed to provide users with a seamless shopping experience. The website includes features like product listings, sorting, filtering, a shopping cart, a wishlist, and a contact form.
