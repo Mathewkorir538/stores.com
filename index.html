@@ -3,388 +3,1366 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopit</title>
-    <link rel="stylesheet" href="index.css"> 
+    <title>Shopit - Your Ultimate Shopping Destination</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-item {
+            transition: all 0.3s ease;
+        }
+        
+        .product-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wishlist-button:hover .heart-icon {
+            color: #ef4444;
+        }
+        
+        .category-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .cart-count {
+            top: -8px;
+            right: -8px;
+        }
+        
+        .search-bar:focus-within {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        
+       
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .product-item {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+        
+        
+        .product-item:nth-child(1) { animation-delay: 0.1s; }
+        .product-item:nth-child(2) { animation-delay: 0.2s; }
+        .product-item:nth-child(3) { animation-delay: 0.3s; }
+        .product-item:nth-child(4) { animation-delay: 0.4s; }
+        .product-item:nth-child(5) { animation-delay: 0.5s; }
+        .product-item:nth-child(6) { animation-delay: 0.6s; }
+        .product-item:nth-child(7) { animation-delay: 0.7s; }
+        .product-item:nth-child(8) { animation-delay: 0.8s; }
+        
+        
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .mobile-menu.open {
+            max-height: 500px;
+        }
+        
+       
+        .loader {
+            border-top-color: #3b82f6;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        
+        .toast {
+            animation: slideIn 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        
+        .modal {
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+       
+        .cart-item:hover {
+            background-color: #f9fafb;
+        }
+    </style>
 </head>
-<body>
-    <div class="main-content">
-     <div id="top-image">
-        <img src="./images/KE_ONS_Payweek_Generic_0425_STB.gif" alt="Top Banner" class="top-banner">
+<body class="min-h-screen flex flex-col">
+    
+    <div class="w-full bg-blue-600 text-white text-center py-2 px-4">
+        <p class="text-sm md:text-base">🔥 Flash Sale! Up to 50% off on selected items - Limited time offer!</p>
     </div>
-  
-    <div id="top-section">
-        <div class="header-container">
-            <div class="logo-container">
-                <img src="./images/online shop.webp" alt="Shopit Logo" class="logo">
-                <h1>Shopit</h1>
+    
+   
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-shopping-bag text-blue-600 text-xl"></i>
+                        </div>
+                        <h1 class="text-2xl font-bold text-blue-600">Shopit</h1>
+                    </div>
+                    
+                    <button id="mobile-menu-button" class="md:hidden text-gray-700">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+                
+                
+                <div class="relative flex-1 max-w-2xl mx-4">
+                    <div class="search-bar flex items-center border border-gray-300 rounded-full overflow-hidden transition-all duration-200">
+                        <input type="text" placeholder="Search for products..." 
+                               class="w-full py-2 px-4 focus:outline-none text-gray-700">
+                        <button class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-question-circle mr-1"></i> Help
+                    </a>
+                    <div class="relative">
+                        <button id="cart-button" class="text-gray-700 hover:text-blue-600 transition-colors">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                        <span id="cart-count" class="cart-count absolute bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </div>
+                    <button id="auth-button" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-user mr-1"></i> Sign In
+                    </button>
+                </div>
             </div>
-            <div class="nav-links">
-                <a href="Home.html">Home</a>
-                <a href="help.html">Help</a>
-                <a href="cart.html">Cart</a>
-                <a href="login.html">Sign In</a>
+            
+            
+            <div id="mobile-menu" class="mobile-menu md:hidden mt-2">
+                <div class="flex flex-col space-y-2 py-2">
+                    <a href="#" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-home mr-2"></i> Home
+                    </a>
+                    <a href="#" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md">
+                        <i class="fas fa-question-circle mr-2"></i> Help
+                    </a>
+                    <button id="mobile-cart-button" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md flex items-center">
+                        <i class="fas fa-shopping-cart mr-2"></i> Cart
+                        <span id="mobile-cart-count" class="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button id="mobile-auth-button" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">
+                        <i class="fas fa-user mr-2"></i> Sign In
+                    </button>
+                </div>
             </div>
-            <div class="search-bar">
-                <input type="text" placeholder="Search products...">
-                <button>Search</button>
+        </div>
+    </header>
+    
+    
+    <main class="flex-grow container mx-auto px-4 py-8">
+       
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Shop by Category</h2>
+            <div class="flex flex-wrap gap-2">
+                <button class="category-btn active px-4 py-2 rounded-full border border-gray-300 hover:bg-blue-50 transition-colors" data-category="all">
+                    All Products
+                </button>
+                <button class="category-btn px-4 py-2 rounded-full border border-gray-300 hover:bg-blue-50 transition-colors" data-category="electronics">
+                    <i class="fas fa-laptop mr-2"></i> Electronics
+                </button>
+                <button class="category-btn px-4 py-2 rounded-full border border-gray-300 hover:bg-blue-50 transition-colors" data-category="fashion">
+                    <i class="fas fa-tshirt mr-2"></i> Fashion
+                </button>
+                <button class="category-btn px-4 py-2 rounded-full border border-gray-300 hover:bg-blue-50 transition-colors" data-category="home">
+                    <i class="fas fa-home mr-2"></i> Home & Living
+                </button>
+                <button class="category-btn px-4 py-2 rounded-full border border-gray-300 hover:bg-blue-50 transition-colors" data-category="automotive">
+                    <i class="fas fa-car mr-2"></i> Automotive
+                </button>
+                <button class="category-btn px-4 py-2 rounded-full border border-gray-300 hover:bg-blue-50 transition-colors" data-category="gaming">
+                    <i class="fas fa-gamepad mr-2"></i> Gaming
+                </button>
             </div>
         </div>
-    </div>
-    <div class="category-filter">
-        <button data-category="all">All</button>
-        <button data-category="electronics">Electronics</button>
-        <button data-category="fashion">Fashion</button>
-        <button data-category="home">Home</button>
-    </div>
-    <div class="product-sorting">
-        <label for="sort">Sort by:</label>
-        <select id="sort">
-            <option value="default">Default</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="name-asc">Name: A to Z</option>
-            <option value="name-desc">Name: Z to A</option>
-        </select>
-    </div>
-    <div class="product-list">
-        <div class="product-item" data-category="electronics">
-            <img src="./images/AHD car reverse camera rear view parking.jpg" alt="Double Cylinder Car Compressor">
-            <h3>Double Cylinder Car Compressor</h3>
-            <p>Price: $250.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/1 (1).jpg" alt="Fuel Saver">
-            <h3>Fuel saver</h3>
-            <p>Price: $200.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/1.jpg" alt="Armrest Cushion Cup Holder">
-            <h3>Armrest Cushion Cup Holder</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/444.jpeg" alt="FM Radio">
-            <h3>FM Radio</h3>
-            <p>Price: $100.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/download (1).jpeg" alt="Hot Selling Jump Starter">
-            <h3>Hot Selling Jump Starter</h3>
-            <p>Price: $300.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/download (2)444.jpeg" alt="Car Phone Holder">
-            <h3>Car Phone Holder</h3>
-            <p>Price: $15.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/download.jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/filter.jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (10).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (11).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (2).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/yamahard350.webp" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (9).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (8).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (7).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (6).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $1oo.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (5).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $90.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (4).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (3).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $100.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (2).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $130.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/444.jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $230.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/pionner GM-DC971 CARAMPLIFIRE.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $220.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/SPEAKER.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/BOSCHMANN.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/yamahard350.webp" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/PLUG.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $110.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/images (7).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $50.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/air freshner.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $110.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/download (1).jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/download 444.jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/BOSCHMANN.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $250.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/download.jpeg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $450.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/floor mat.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $350.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/FUEL PUMP.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $250.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/FM RADIO.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $350.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/air freshner.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/DEGREE GOLD HEAT COOL.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/SPEAKER.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $250.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/PLUG.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $450.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/key case cover bag.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/phone holder.jpg" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </div>
-        <div class="product-item" data-category="electronics">
-            <img src="./images/yamahard350.webp" alt="Car Seat Cover">
-            <h3>Car Seat Cover</h3>
-            <p>Price: $150.00</p>
-            <button>Add to cart</button>
-            <button class="wishlist-button">Add to wishlist</button>
-        </Div> 
-    </div>
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>About Shopit</h3>
-                <p>&copy; 2025 Shopit. All rights reserved.</p>
-                <p>Your one-stop shop for all your needs!</p>
+        
+       
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h2 class="text-2xl font-bold text-gray-800">Featured Products</h2>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center">
+                    <label for="sort" class="mr-2 text-gray-700">Sort by:</label>
+                    <select id="sort" class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="default">Recommended</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="rating">Top Rated</option>
+                        <option value="newest">Newest Arrivals</option>
+                    </select>
+                </div>
             </div>
+        </div>
+        
+       
+        <div id="loading-spinner" class="hidden flex justify-center py-12">
+            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+        </div>
+        
+        
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
            
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <div class="social-media">
-                    <a href="#" target="_blank"><img src="./images/FECEBOOK LOGO.avif" alt="Facebook"></a>
-                    <a href="#" target="_blank"><img src="./images/free-twitter-logo-icon-2429-thumb.png" alt="Twitter"></a>
-                    <a href="#" target="_blank"><img src="./images/INSTAGRAM LOGO.jpg" alt="Instagram"></a>
-                </div>
-        <div class="footer-section">
-            <h3>Our Logo</h3>
-            <img src="./images/online shop.webp" alt="Shopit Logo" class="footer-logo">
         </div>
-<div class="footer-section">
-    <h3>Contact Us</h3>
-    <form id="contact-form" action="#" method="post">
-        <input type="text" id="name" name="name" placeholder="Your Name" required>
-        <input type="email" id="email" name="email" placeholder="Your Email" required>
-        <textarea id="message" name="message" placeholder="Your Message" rows="4" required></textarea>
-        <button type="submit">Submit</button>
-    </form>
-</div>
+        
+       
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-1">
+                <button id="prev-page" class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="page-btn px-3 py-1 rounded bg-blue-600 text-white" data-page="1">1</button>
+                <button class="page-btn px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100" data-page="2">2</button>
+                <button class="page-btn px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100" data-page="3">3</button>
+                <span class="px-2">...</span>
+                <button class="page-btn px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100" data-page="8">8</button>
+                <button id="next-page" class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </nav>
+        </div>
+    </main>
+    
+   
+    <section class="bg-gray-100 py-12">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Stay Updated</h2>
+                <p class="text-gray-600 mb-6">Subscribe to our newsletter for the latest products and exclusive offers</p>
+                <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                    <input type="email" id="newsletter-email" placeholder="Your email address" 
+                           class="flex-grow max-w-md px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button id="subscribe-btn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                        Subscribe
+                    </button>
+                </div>
+                <p id="newsletter-message" class="mt-2 text-sm hidden"></p>
             </div>
-            <div class="footer-section">
-                <h3>Our Partners</h3>
-                <div class="partners">
-                    <img src="./images/kcb-group-vector-logo.png" alt="Partner 1">
-                    <img src="./images/COKE LOGO.jpg" alt="Partner 2">
+        </div>
+    </section>
+    
+   
+    <footer class="bg-gray-800 text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+               
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">About Shopit</h3>
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 Shopit. All rights reserved.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+               
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Shop</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                
+              
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Customer Service</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">My Account</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Order Tracking</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Wishlist</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms & Conditions</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Returns & Exchanges</a></li>
+                    </ul>
+                </div>
+                
+              
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                            <span>123 Shopping Street, Nairobi, Kenya</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2"></i>
+                            <span>+254 700 123 456</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>info@shopit.com</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div>
-                <div class="product-list">
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2023 Shopit. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/MasterCard_Logo.svg/2560px-MasterCard_Logo.svg.png" alt="Mastercard" class="h-8">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" class="h-8">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/2560px-PayPal.svg.png" alt="PayPal" class="h-8">
+                </div>
             </div>
         </div>
     </footer>
-    <div class="footer-container">
+    
+    
+    <div id="toast" class="hidden fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="toast-message">Product added to cart!</span>
+        </div>
     </div>
-    <script src="index.js"></script> 
+    
+
+    <div id="auth-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">Sign In</h3>
+                    <button id="close-auth-modal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="auth-form">
+                    <div class="mb-4">
+                        <label for="email" class="block text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="password" class="block text-gray-700 mb-2">Password</label>
+                        <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors mb-4">
+                        Sign In
+                    </button>
+                    
+                    <p class="text-center text-gray-600">
+                        Don't have an account? 
+                        <a href="#" id="switch-to-register" class="text-blue-600 hover:underline">Register</a>
+                    </p>
+                </form>
+                
+                <form id="register-form" class="hidden">
+                    <div class="mb-4">
+                        <label for="reg-name" class="block text-gray-700 mb-2">Full Name</label>
+                        <input type="text" id="reg-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="reg-email" class="block text-gray-700 mb-2">Email</label>
+                        <input type="email" id="reg-email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="reg-password" class="block text-gray-700 mb-2">Password</label>
+                        <input type="password" id="reg-password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors mb-4">
+                        Register
+                    </button>
+                    
+                    <p class="text-center text-gray-600">
+                        Already have an account? 
+                        <a href="#" id="switch-to-login" class="text-blue-600 hover:underline">Sign In</a>
+                    </p>
+                </form>
+                
+                <div id="auth-message" class="mt-4 text-center hidden"></div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div id="cart-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-2xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">Your Cart (<span id="cart-modal-count">0</span> items)</h3>
+                    <button id="close-cart-modal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="cart-items" class="max-h-96 overflow-y-auto">
+                  
+                    <div id="empty-cart-message" class="text-center py-8">
+                        <i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Your cart is empty</p>
+                    </div>
+                </div>
+                
+                <div id="cart-summary" class="border-t border-gray-200 pt-4 mt-4 hidden">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-700">Subtotal:</span>
+                        <span id="cart-subtotal" class="font-semibold">$0.00</span>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span class="text-gray-700">Shipping:</span>
+                        <span id="cart-shipping" class="font-semibold">$5.00</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-bold">
+                        <span>Total:</span>
+                        <span id="cart-total" class="text-blue-600">$0.00</span>
+                    </div>
+                    
+                    <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                        <button id="continue-shopping" class="flex-1 border border-gray-300 text-gray-700 py-2 rounded-md hover:bg-gray-100 transition-colors">
+                            Continue Shopping
+                        </button>
+                        <button id="checkout-btn" class="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        
+        const products = [
+            {
+                id: 1,
+                name: "Double Cylinder Car Compressor",
+                description: "High performance air compressor for vehicles",
+                price: 250.00,
+                category: "electronics",
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FyJTIwY29tcHJlc3NvcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 2,
+                name: "Premium Fuel Saver",
+                description: "Improves fuel efficiency up to 20%",
+                price: 200.00,
+                originalPrice: 250.00,
+                category: "electronics",
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1581093450021-3a736b1faf0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZnVlbCUyMHNhdmVyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+                sale: true
+            },
+            {
+                id: 3,
+                name: "Armrest Cushion Cup Holder",
+                description: "Comfortable armrest with cup holders",
+                price: 120.00,
+                originalPrice: 150.00,
+                category: "home",
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FyJTIwY3VwaG9sZGVyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+                sale: true
+            },
+            {
+                id: 4,
+                name: "Premium FM Radio",
+                description: "Crystal clear sound with Bluetooth",
+                price: 100.00,
+                category: "electronics",
+                rating: 4.2,
+                image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Zm0lMjByYWRpb3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 5,
+                name: "Portable Jump Starter",
+                description: "2000A peak current for all vehicles",
+                price: 300.00,
+                category: "electronics",
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2FyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+                sale: false,
+                new: true
+            },
+            {
+                id: 6,
+                name: "Car Phone Holder",
+                description: "360° rotation with strong grip",
+                price: 15.00,
+                category: "electronics",
+                rating: 4.0,
+                image: "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvbmUlMjBob2xkZXJ8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 7,
+                name: "Premium Car Seat Cover",
+                description: "Universal fit with breathable fabric",
+                price: 50.00,
+                category: "automotive",
+                rating: 4.3,
+                image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FyJTIwc2VhdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 8,
+                name: "Car Air Freshener",
+                description: "Long-lasting fragrance (5 scents)",
+                price: 8.00,
+                category: "automotive",
+                rating: 3.9,
+                image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2FyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 9,
+                name: "Wireless Earbuds",
+                description: "Premium sound quality with noise cancellation",
+                price: 120.00,
+                category: "electronics",
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 10,
+                name: "Smart Watch",
+                description: "Track your fitness and notifications",
+                price: 180.00,
+                category: "electronics",
+                rating: 4.6,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 11,
+                name: "Men's Casual Shirt",
+                description: "Comfortable cotton shirt for everyday wear",
+                price: 35.00,
+                category: "fashion",
+                rating: 4.2,
+                image: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c2hpcnR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 12,
+                name: "Women's Summer Dress",
+                description: "Lightweight and breathable for summer",
+                price: 45.00,
+                category: "fashion",
+                rating: 4.4,
+                image: "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHJlc3N8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 13,
+                name: "Coffee Maker",
+                description: "Brew your perfect cup every morning",
+                price: 80.00,
+                category: "home",
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1556911463-12d8df5e6d1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y29mZmVlJTIwbWFrZXJ8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 14,
+                name: "Blender",
+                description: "Powerful blending for smoothies and more",
+                price: 65.00,
+                category: "home",
+                rating: 4.3,
+                image: "https://images.unsplash.com/photo-1563211183-be9b9831eda3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmxlbmRlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 15,
+                name: "Gaming Mouse",
+                description: "High precision for competitive gaming",
+                price: 75.00,
+                category: "gaming",
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1527814050087-3793815479db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FtaW5nJTIwbW91c2V8ZW58MHx8MHx8fDA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            },
+            {
+                id: 16,
+                name: "Mechanical Keyboard",
+                description: "Tactile feedback for typing and gaming",
+                price: 110.00,
+                category: "gaming",
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1615663248957-c1f42c0a10e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a2V5Ym9hcmR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+                sale: false
+            }
+        ];
+
+       
+        const productGrid = document.getElementById('product-grid');
+        const sortSelect = document.getElementById('sort');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const subscribeBtn = document.getElementById('subscribe-btn');
+        const newsletterEmail = document.getElementById('newsletter-email');
+        const newsletterMessage = document.getElementById('newsletter-message');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const cartButton = document.getElementById('cart-button');
+        const mobileCartButton = document.getElementById('mobile-cart-button');
+        const cartCount = document.getElementById('cart-count');
+        const mobileCartCount = document.getElementById('mobile-cart-count');
+        const authButton = document.getElementById('auth-button');
+        const mobileAuthButton = document.getElementById('mobile-auth-button');
+        const pageButtons = document.querySelectorAll('.page-btn');
+        const prevPageButton = document.getElementById('prev-page');
+        const nextPageButton = document.getElementById('next-page');
+        
+       
+        const authModal = document.getElementById('auth-modal');
+        const closeAuthModal = document.getElementById('close-auth-modal');
+        const authForm = document.getElementById('auth-form');
+        const registerForm = document.getElementById('register-form');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+        const authMessage = document.getElementById('auth-message');
+        
+        const cartModal = document.getElementById('cart-modal');
+        const closeCartModal = document.getElementById('close-cart-modal');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const cartSummary = document.getElementById('cart-summary');
+        const cartSubtotal = document.getElementById('cart-subtotal');
+        const cartShipping = document.getElementById('cart-shipping');
+        const cartTotal = document.getElementById('cart-total');
+        const continueShopping = document.getElementById('continue-shopping');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const cartModalCount = document.getElementById('cart-modal-count');
+
+        
+        let currentCategory = 'all';
+        let currentSort = 'default';
+        let currentPage = 1;
+        const itemsPerPage = 8;
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        let user = JSON.parse(localStorage.getItem('user')) || null;
+        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+       
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            renderProducts(getPaginatedProducts());
+            setupEventListeners();
+            updateAuthButton();
+        });
+
+      
+        function setupEventListeners() {
+          
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const category = button.getAttribute('data-category');
+                    currentCategory = category;
+                    currentPage = 1;
+                    
+
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    filterAndSortProducts();
+                });
+            });
+
+           
+            sortSelect.addEventListener('change', () => {
+                currentSort = sortSelect.value;
+                filterAndSortProducts();
+            });
+
+           
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+
+
+            subscribeBtn.addEventListener('click', subscribeToNewsletter);
+            newsletterEmail.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') subscribeToNewsletter();
+            });
+
+           
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && e.target !== mobileMenuButton) {
+                    mobileMenu.classList.remove('open');
+                }
+            });
+
+           
+            cartButton.addEventListener('click', openCartModal);
+            mobileCartButton.addEventListener('click', openCartModal);
+            
+           
+            authButton.addEventListener('click', openAuthModal);
+            mobileAuthButton.addEventListener('click', openAuthModal);
+            
+           
+            closeAuthModal.addEventListener('click', closeModal);
+            closeCartModal.addEventListener('click', closeModal);
+            continueShopping.addEventListener('click', closeModal);
+            
+            
+            switchToRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                authForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            });
+            
+            switchToLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                registerForm.classList.add('hidden');
+                authForm.classList.remove('hidden');
+            });
+            
+            
+            authForm.addEventListener('submit', handleLogin);
+            registerForm.addEventListener('submit', handleRegister);
+            
+            
+            checkoutBtn.addEventListener('click', handleCheckout);
+            
+            
+            pageButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    currentPage = parseInt(button.getAttribute('data-page'));
+                    filterAndSortProducts();
+                });
+            });
+            
+            prevPageButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    filterAndSortProducts();
+                }
+            });
+            
+            nextPageButton.addEventListener('click', () => {
+                const totalPages = Math.ceil(getFilteredProducts().length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    filterAndSortProducts();
+                }
+            });
+        }
+
+        
+        function filterAndSortProducts() {
+          
+            loadingSpinner.classList.remove('hidden');
+            productGrid.innerHTML = '';
+            
+           
+            setTimeout(() => {
+                renderProducts(getPaginatedProducts());
+                updatePagination();
+                loadingSpinner.classList.add('hidden');
+            }, 300);
+        }
+        
+       
+        function getFilteredProducts() {
+            let filteredProducts = [...products];
+            
+           
+            if (currentCategory !== 'all') {
+                filteredProducts = filteredProducts.filter(
+                    product => product.category === currentCategory
+                );
+            }
+            
+            
+            switch (currentSort) {
+                case 'price-asc':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    filteredProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'newest':
+                   
+                    filteredProducts.sort((a, b) => b.id - a.id);
+                    break;
+                default:
+                   
+                    break;
+            }
+            
+            return filteredProducts;
+        }
+        
+        
+        function getPaginatedProducts() {
+            const filteredProducts = getFilteredProducts();
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            return filteredProducts.slice(startIndex, endIndex);
+        }
+        
+       
+        function updatePagination() {
+            const totalPages = Math.ceil(getFilteredProducts().length / itemsPerPage);
+            
+            
+            prevPageButton.disabled = currentPage === 1;
+            nextPageButton.disabled = currentPage === totalPages;
+            
+           
+            pageButtons.forEach(button => {
+                const pageNum = parseInt(button.getAttribute('data-page'));
+                if (pageNum === currentPage) {
+                    button.classList.remove('border-gray-300', 'text-gray-700', 'hover:bg-gray-100');
+                    button.classList.add('bg-blue-600', 'text-white');
+                } else {
+                    button.classList.add('border-gray-300', 'text-gray-700', 'hover:bg-gray-100');
+                    button.classList.remove('bg-blue-600', 'text-white');
+                }
+            });
+        }
+
+        
+        function renderProducts(productsToRender) {
+            productGrid.innerHTML = '';
+            
+            if (productsToRender.length === 0) {
+                productGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-box-open text-4xl text-gray-400 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-700">No products found</h3>
+                        <p class="text-gray-500">Try adjusting your filters or search term</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsToRender.forEach(product => {
+                const isInWishlist = wishlist.includes(product.id);
+                const productElement = document.createElement('div');
+                productElement.className = 'product-item bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 transition-all duration-300 hover:shadow-lg';
+                productElement.innerHTML = `
+                    <div class="relative">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 right-2">
+                            <button class="wishlist-button bg-white p-2 rounded-full shadow-md hover:bg-gray-100" data-id="${product.id}">
+                                <i class="heart-icon ${isInWishlist ? 'fas text-red-500' : 'far text-gray-400'} fa-heart"></i>
+                            </button>
+                        </div>
+                        ${product.rating ? `
+                        <div class="absolute bottom-2 left-2 bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded">
+                            <i class="fas fa-star mr-1"></i> ${product.rating}
+                        </div>
+                        ` : ''}
+                        ${product.sale ? `
+                        <div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                            SALE
+                        </div>
+                        ` : ''}
+                        ${product.new ? `
+                        <div class="absolute top-2 left-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                            NEW
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-1">${product.name}</h3>
+                        <p class="text-gray-500 text-sm mb-2">${product.description}</p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-lg font-bold text-blue-600">$${product.price.toFixed(2)}</span>
+                                ${product.originalPrice ? `
+                                <span class="text-xs text-gray-500 line-through ml-1">$${product.originalPrice.toFixed(2)}</span>
+                                ` : ''}
+                            </div>
+                            <button class="add-to-cart bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700 transition-colors" data-id="${product.id}">
+                                <i class="fas fa-cart-plus mr-1"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productGrid.appendChild(productElement);
+            });
+            
+            
+            document.querySelectorAll('.wishlist-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    toggleWishlist(productId);
+                    
+                    const heartIcon = this.querySelector('.heart-icon');
+                    if (heartIcon.classList.contains('far')) {
+                        heartIcon.classList.remove('far');
+                        heartIcon.classList.add('fas', 'text-red-500');
+                        showToast('Added to wishlist!');
+                    } else {
+                        heartIcon.classList.remove('fas', 'text-red-500');
+                        heartIcon.classList.add('far', 'text-gray-400');
+                        showToast('Removed from wishlist!');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    addToCart(productId);
+                });
+            });
+        }
+        
+       
+        function toggleWishlist(productId) {
+            const index = wishlist.indexOf(productId);
+            if (index === -1) {
+                wishlist.push(productId);
+            } else {
+                wishlist.splice(index, 1);
+            }
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
+
+        
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            
+            const existingItem = cartItems.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cartItems.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+            
+           
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            
+            updateCartCount();
+            showToast(`${product.name} added to cart!`);
+        }
+        
+       
+        function updateCartCount() {
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            mobileCartCount.textContent = totalItems;
+            cartModalCount.textContent = totalItems;
+        }
+        
+        
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+        
+       
+        function openAuthModal() {
+            if (isLoggedIn) {
+               
+                isLoggedIn = false;
+                user = null;
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('user');
+                updateAuthButton();
+                showToast('Logged out successfully');
+            } else {
+              
+                authModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        
+        function openCartModal() {
+            cartModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderCartItems();
+        }
+        
+       
+        function closeModal() {
+            authModal.classList.remove('active');
+            cartModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+       
+        function renderCartItems() {
+            cartItemsContainer.innerHTML = '';
+            
+            if (cartItems.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                cartSummary.classList.add('hidden');
+                return;
+            }
+            
+            emptyCartMessage.classList.add('hidden');
+            
+            cartItems.forEach(item => {
+                const cartItemElement = document.createElement('div');
+                cartItemElement.className = 'cart-item flex py-4 border-b border-gray-200 last:border-0 transition-colors';
+                cartItemElement.innerHTML = `
+                    <div class="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="ml-4 flex-grow">
+                        <div class="flex justify-between">
+                            <h4 class="text-gray-800 font-medium">${item.name}</h4>
+                            <span class="text-gray-800 font-semibold">$${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                        <p class="text-gray-500 text-sm">$${item.price.toFixed(2)} each</p>
+                        <div class="mt-2 flex items-center">
+                            <button class="quantity-btn decrease bg-gray-200 text-gray-700 px-2 py-1 rounded-l hover:bg-gray-300" data-id="${item.id}">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="quantity bg-gray-100 px-3 py-1">${item.quantity}</span>
+                            <button class="quantity-btn increase bg-gray-200 text-gray-700 px-2 py-1 rounded-r hover:bg-gray-300" data-id="${item.id}">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="remove-btn ml-4 text-red-500 hover:text-red-700 text-sm" data-id="${item.id}">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(cartItemElement);
+            });
+            
+            
+            document.querySelectorAll('.quantity-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    const isIncrease = this.classList.contains('increase');
+                    updateCartItemQuantity(productId, isIncrease);
+                });
+            });
+            
+           
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    removeFromCart(productId);
+                });
+            });
+            
+            
+            updateCartSummary();
+        }
+        
+      
+        function updateCartItemQuantity(productId, isIncrease) {
+            const itemIndex = cartItems.findIndex(item => item.id === productId);
+            
+            if (itemIndex !== -1) {
+                if (isIncrease) {
+                    cartItems[itemIndex].quantity += 1;
+                } else {
+                    if (cartItems[itemIndex].quantity > 1) {
+                        cartItems[itemIndex].quantity -= 1;
+                    } else {
+                       
+                        cartItems.splice(itemIndex, 1);
+                    }
+                }
+                
+               
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                
+                updateCartCount();
+                renderCartItems();
+            }
+        }
+        
+        
+        function removeFromCart(productId) {
+            cartItems = cartItems.filter(item => item.id !== productId);
+            
+            
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            
+            updateCartCount();
+            renderCartItems();
+            showToast('Item removed from cart');
+        }
+        
+        
+        function updateCartSummary() {
+            if (cartItems.length === 0) {
+                cartSummary.classList.add('hidden');
+                return;
+            }
+            
+            cartSummary.classList.remove('hidden');
+            
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = 5.00; 
+            const total = subtotal + shipping;
+            
+            cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+            cartShipping.textContent = `$${shipping.toFixed(2)}`;
+            cartTotal.textContent = `$${total.toFixed(2)}`;
+        }
+        
+       
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+           
+            if (!email || !password) {
+                showAuthMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+           
+            setTimeout(() => {
+                
+                const storedUser = JSON.parse(localStorage.getItem('user'));
+                
+                if (storedUser && storedUser.email === email && storedUser.password === password) {
+                  
+                    isLoggedIn = true;
+                    user = storedUser;
+                    localStorage.setItem('isLoggedIn', 'true');
+                    
+                    closeModal();
+                    updateAuthButton();
+                    showToast('Logged in successfully');
+                } else {
+                    showAuthMessage('Invalid email or password', 'error');
+                }
+            }, 1000);
+        }
+        
+       
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            
+           
+            if (!name || !email || !password) {
+                showAuthMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showAuthMessage('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAuthMessage('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+           
+            setTimeout(() => {
+                
+                const newUser = {
+                    name,
+                    email,
+                    password
+                };
+                
+                localStorage.setItem('user', JSON.stringify(newUser));
+                isLoggedIn = true;
+                user = newUser;
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                
+                registerForm.classList.add('hidden');
+                authForm.classList.remove('hidden');
+                
+               
+                document.getElementById('reg-name').value = '';
+                document.getElementById('reg-email').value = '';
+                document.getElementById('reg-password').value = '';
+                
+                closeModal();
+                updateAuthButton();
+                showToast('Account created successfully!');
+            }, 1000);
+        }
+        
+       
+        function updateAuthButton() {
+            if (isLoggedIn) {
+                authButton.innerHTML = '<i class="fas fa-sign-out-alt mr-1"></i> Logout';
+                mobileAuthButton.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i> Logout';
+            } else {
+                authButton.innerHTML = '<i class="fas fa-user mr-1"></i> Sign In';
+                mobileAuthButton.innerHTML = '<i class="fas fa-user mr-2"></i> Sign In';
+            }
+        }
+        
+       
+        function showAuthMessage(message, type) {
+            authMessage.textContent = message;
+            authMessage.className = 'mt-4 text-center';
+            
+            if (type === 'error') {
+                authMessage.classList.add('text-red-500');
+            } else {
+                authMessage.classList.add('text-green-500');
+            }
+            
+            authMessage.classList.remove('hidden');
+            
+            setTimeout(() => {
+                authMessage.classList.add('hidden');
+            }, 3000);
+        }
+        
+       
+        function handleCheckout() {
+            if (!isLoggedIn) {
+                closeModal();
+                openAuthModal();
+                showToast('Please sign in to checkout');
+                return;
+            }
+            
+           
+            showToast('Proceeding to checkout...');
+           
+            setTimeout(() => {
+           
+                cartItems = [];
+                localStorage.removeItem('cartItems');
+                
+                updateCartCount();
+                closeModal();
+                showToast('Order placed successfully!');
+                
+       
+                emptyCartMessage.classList.remove('hidden');
+                cartSummary.classList.add('hidden');
+                cartItemsContainer.innerHTML = '';
+            }, 2000);
+        }
+
+        function subscribeToNewsletter() {
+            const email = newsletterEmail.value.trim();
+            
+            if (!email) {
+                newsletterMessage.textContent = 'Please enter your email address';
+                newsletterMessage.className = 'mt-2 text-sm text-red-500';
+                newsletterMessage.classList.remove('hidden');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                newsletterMessage.textContent = 'Please enter a valid email address';
+                newsletterMessage.className = 'mt-2 text-sm text-red-500';
+                newsletterMessage.classList.remove('hidden');
+                return;
+            }
+            
+  
+            setTimeout(() => {
+                newsletterMessage.textContent = 'Thank you for subscribing!';
+                newsletterMessage.className = 'mt-2 text-sm text-green-500';
+                newsletterMessage.classList.remove('hidden');
+                newsletterEmail.value = '';
+                
+           
+                setTimeout(() => {
+                    newsletterMessage.classList.add('hidden');
+                }, 3000);
+            }, 1000);
+        }
+
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+    </script>
 </body>
 </html>
